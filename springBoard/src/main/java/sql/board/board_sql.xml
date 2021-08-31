@@ -34,14 +34,13 @@
 				,BOARD_NUM
 				,BOARD_TITLE
 				,BOARD_COMMENT
-		      	,ROW_NUMBER() OVER(ORDER BY BOARD_NUM DESC) AS NUMROW
+		      	,ROW_NUMBER() OVER(ORDER BY BOARD_NUM ASC) AS NUMROW
 		      	,COUNT(*) OVER() AS TOTAL_CNT
 			FROM
 				BOARD	
-		) A JOIN COM_CODE B
-		ON A.BOARD_TYPE = B.CODE_ID
-		AND A.BOARD_TYPE IN ('a01','a02','a03','a04')
-		WHERE NUMROW BETWEEN (#{pageNo}-1)*10 + 1 AND (#{pageNo})*10
+		) A, COM_CODE B
+		WHERE A.BOARD_TYPE = B.CODE_ID
+		AND NUMROW BETWEEN (#{pageNo}-1)*10 + 1 AND (#{pageNo})*10
 	</select>
 
 	<select id="boardTotal" parameterType="Integer"
@@ -61,6 +60,7 @@
       FROM BOARD A, COM_CODE B
         WHERE A.BOARD_TYPE = B.CODE_ID
             AND B.CODE_NAME = #{boardType}
+            AND A.BOARD_NUM = #{boardNum}
 	</select>
 
 	<insert id="boardInsert" parameterType="map">
@@ -76,7 +76,7 @@
 		,MODIFIED_TIME
 		)
 		VALUES
-		(#{com_codeList.codeId}
+		(#{com_codeVo.codeId}
 		,(SELECT NVL(MAX(BOARD_NUM),0)+1 FROM BOARD)
 		,#{boardVo.boardTitle}
 		,#{boardVo.boardComment}
@@ -95,17 +95,42 @@
 		SET
 		BOARD_TITLE = #{boardVo.boardTitle},
 		BOARD_COMMENT = #{boardVo.boardComment},
-		BOARD_TYPE = #{com_codeList.codeId}
+		BOARD_TYPE = #{com_codeVo.codeId}
 		WHERE BOARD_NUM = #{boardVo.boardNum}
 	</update>
 
 	<select id="TypeList"
 		parameterType="com.spring.board.vo.Com_CodeVo" resultMap="Com_codeMap">
 		SELECT
-		CODE_NAME
+		CODE_NAME,
+		CODE_ID
 		FROM
 		COM_CODE
         WHERE
         CODE_TYPE = 'menu'
 	</select>
+	
+	<select id="boardCheckbox" parameterType="com.spring.board.vo.BoardVo" resultMap="boardVo">
+		SELECT 
+		  B.CODE_NAME AS BOARD_TYPE
+		  ,A.BOARD_NUM
+		  ,A.BOARD_TITLE
+		  ,A.BOARD_COMMENT
+		  ,A.TOTAL_CNT
+		FROM 
+		(
+		  SELECT
+		      	BOARD_TYPE
+				,BOARD_NUM
+				,BOARD_TITLE
+				,BOARD_COMMENT
+		      	,ROW_NUMBER() OVER(ORDER BY BOARD_NUM ASC) AS NUMROW
+		      	,COUNT(*) OVER() AS TOTAL_CNT
+			FROM
+				BOARD	
+		) A JOIN COM_CODE B
+		ON A.BOARD_TYPE = B.CODE_ID
+		WHERE A.BOARD_TYPE = #{boardType}
+	</select>
+	
 </mapper>

@@ -8,8 +8,20 @@
 <title>list</title>
 </head>
 <script type="text/javascript">
-	$j(document).ready(function() {
-	});
+$j(document).ready(function(){
+		$j("#total").on("click", function() {
+			if ($j("#total").prop("checked")) {
+				$j("input[name=CheckType]").prop("checked", true);
+			} else {
+				$j("input[name=CheckType]").prop("checked", false);
+			}
+		});
+		
+		$j(".CheckType").click(function(){
+			$j("#total").prop("checked", false);
+		});
+});
+		
 </script>
 <body>
 	<table align="center">
@@ -40,10 +52,11 @@
 			<td align="right"><a href="/board/boardWrite.do">글쓰기</a></td>
 		</tr>
 		<tr>
-			<td align="left"><input name="AllCheck" type="checkbox">전체
-				<c:forEach var="check" items="${com_codeList}">
-					<input name="CheckType" value="checkbox" type="checkbox">${check.codeName}
-		</c:forEach></td>
+			<td align="left"><input type="checkbox" id="total">전체 <c:forEach
+					var="check" items="${com_codeList}">
+					<input name="CheckType" value="${check.codeId}" type="checkbox"
+						class="CheckType">${check.codeName}
+			</c:forEach> <input type="submit" value="검색"></td>
 		</tr>
 	</table>
 </body>
