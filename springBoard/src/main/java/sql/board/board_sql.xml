@@ -7,10 +7,10 @@
 		<result property="boardNum" column="BOARD_NUM" />
 		<result property="boardTitle" column="BOARD_TITLE" />
 		<result property="boardComment" column="BOARD_COMMENT" />
-		<collection property="Com_codeList" resultMap="Com_codeMap"></collection>
+		<collection property="ComList" resultMap="ComMap"></collection>
 	</resultMap>
 
-	<resultMap type="com.spring.board.vo.Com_CodeVo" id="Com_codeMap">
+	<resultMap type="com.spring.board.vo.Com_CodeVo" id="ComMap">
 		<result property="codeType" column="CODE_TYPE" />
 		<result property="codeId" column="CODE_ID" />
 		<result property="codeName" column="CODE_NAME" />
@@ -76,7 +76,7 @@
 		,MODIFIED_TIME
 		)
 		VALUES
-		(#{com_codeVo.codeId}
+		(#{comVo.codeId}
 		,(SELECT NVL(MAX(BOARD_NUM),0)+1 FROM BOARD)
 		,#{boardVo.boardTitle}
 		,#{boardVo.boardComment}
@@ -95,12 +95,12 @@
 		SET
 		BOARD_TITLE = #{boardVo.boardTitle},
 		BOARD_COMMENT = #{boardVo.boardComment},
-		BOARD_TYPE = #{com_codeVo.codeId}
+		BOARD_TYPE = #{comVo.codeId}
 		WHERE BOARD_NUM = #{boardVo.boardNum}
 	</update>
 
 	<select id="TypeList"
-		parameterType="com.spring.board.vo.Com_CodeVo" resultMap="Com_codeMap">
+		parameterType="com.spring.board.vo.Com_CodeVo" resultMap="ComMap">
 		SELECT
 		CODE_NAME,
 		CODE_ID

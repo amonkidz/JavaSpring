@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.spring.board.dao.BoardDao;
-import com.spring.board.vo.Com_CodeVo;
+import com.spring.board.vo.ComVo;
 import com.spring.board.vo.BoardVo;
 import com.spring.board.vo.PageVo;
 
@@ -67,9 +67,9 @@ public class BoardDaoImpl implements BoardDao{
 	}
 	
 	@Override
-	public List<Com_CodeVo> selectTypeList(Com_CodeVo com_codeVo) throws Exception {
+	public List<ComVo> selectTypeList(ComVo comVo) throws Exception {
 		
-		return sqlSession.selectList("board.TypeList", com_codeVo);
+		return sqlSession.selectList("board.TypeList", comVo);
 	}
 	
 }

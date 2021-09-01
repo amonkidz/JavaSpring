@@ -1,6 +1,6 @@
 package com.spring.board.vo;
 
-public class Com_CodeVo {
+public class ComVo {
 	
 	private String codeType;
 	private String codeId;

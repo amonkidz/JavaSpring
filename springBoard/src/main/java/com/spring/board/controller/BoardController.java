@@ -1,14 +1,10 @@
 package com.spring.board.controller;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.board.HomeController;
 import com.spring.board.service.boardService;
 import com.spring.board.vo.BoardVo;
-import com.spring.board.vo.Com_CodeVo;
+import com.spring.board.vo.ComVo;
 import com.spring.board.vo.PageVo;
 import com.spring.common.CommonUtil;
 
@@ -39,12 +34,12 @@ public class BoardController {
 	// Main에 List를 보여주는 역할
 	@RequestMapping(value = "/board/boardList.do", method = RequestMethod.GET)
 	// board/boardList.do의 url과 연결되어 있으며 GET 방식으로 해당 url을 가져오는 역할
-	public String boardList(Locale locale, Model model, PageVo pageVo, Com_CodeVo com_codeVo) throws Exception {
+	public String boardList(Locale locale, Model model, PageVo pageVo, ComVo comVo) throws Exception {
 		
 		List<BoardVo> boardList = new ArrayList<BoardVo>();
 		// BoardVo에 저장된 값을 보여주기 위함
 		
-		List<Com_CodeVo> Com_CodeList = new ArrayList<Com_CodeVo>();
+		List<ComVo> ComList = new ArrayList<ComVo>();
 		// Com_CodeVo에 저장된 값을 보여주기 위함
 		
 		int page = 1;
@@ -61,13 +56,13 @@ public class BoardController {
 		// PageVo를 이용하여 List 안에 들어있는 BoardVo 값을 보여줄 수 있도록 Service로 값을 전달
 		totalCnt = boardService.selectBoardCnt();
 		// Cnt값을 Service로 전달 쿼리문이 돌아가면서 cnt가 증가될 수 있도록
-		Com_CodeList = boardService.SelectTypeList(com_codeVo);
+		ComList = boardService.SelectTypeList(comVo);
 		// Com_CodeVo에 저장된 값을 Service로 전달
 		
 		model.addAttribute("boardList", boardList);
 		model.addAttribute("totalCnt", totalCnt);
 		model.addAttribute("pageNo", page);
-		model.addAttribute("com_codeList", Com_CodeList);
+		model.addAttribute("comList", ComList);
 		// Model을 이용하여 나타내고 싶은 값을 View로 전달 key, value의 형태로 key를 이용하여 View에서 해당 값을 화면으로 나타낼 수 있음
 		
 		return "board/boardList";
@@ -84,7 +79,7 @@ public class BoardController {
 		
 		model.addAttribute("boardNum", boardNum);
 		model.addAttribute("board", boardVo);
-		model.addAttribute("com", boardVo.getCom_codeList());
+		model.addAttribute("com", boardVo.getComList());
 		// Model을 이용하여 나타내고 싶은 값을 View로 전달 key, value의 형태로 key를 이용하여 View에서 해당 값을 화면으로 나타낼 수 있음
 		// boardVo.getCom_codeList는 BoardVo안에 colletion 형태로 지정된 Com_CodeVo안의 값을 가져오기 위함
 		
@@ -95,13 +90,13 @@ public class BoardController {
 	// 게시글 작성시 보여지는 화면
 	@RequestMapping(value = "/board/boardWrite.do", method = RequestMethod.GET)
 	// board/boardWrite.do와 연결
-	public String boardWrite(Locale locale, Model model, Com_CodeVo com_codeVo) throws Exception {
+	public String boardWrite(Locale locale, Model model, ComVo comVo) throws Exception {
 		
-		List<Com_CodeVo> Com_CodeList = new ArrayList<Com_CodeVo>();
+		List<ComVo> ComList = new ArrayList<ComVo>();
 		// Com_CodeVo에 저장된 값을 보여주기 위함
-		Com_CodeList = boardService.SelectTypeList(com_codeVo);
+		ComList = boardService.SelectTypeList(comVo);
 		// 작성한 내역들 중 SelectBox의 CodeId 값을 받아 Service로 넘겨줌 
-		model.addAttribute("com_codeList", Com_CodeList);
+		model.addAttribute("comList", ComList);
 		// Model을 이용하여 나타내고 싶은 값을 View로 전달 key, value의 형태로 key를 이용하여 View에서 해당 값을 화면으로 나타낼 수 있음
 		// DB와 연동하여 SelectBox에 List를 보여주기 위함
 		
@@ -114,7 +109,7 @@ public class BoardController {
 	// board/boardWriteAction.do와 연결하고 POST형식을 이용해야 url에 Data가 노출되지 않는다
 	@ResponseBody
 	// Json type으로 넘어온 data값을 이용하기 위해서 사용
-	public String boardWriteAction(Locale locale, BoardVo boardVo, Com_CodeVo com_codeVo) throws Exception {
+	public String boardWriteAction(Locale locale, BoardVo boardVo, ComVo comVo) throws Exception {
 		
 		HashMap<String, String> result = new HashMap<String, String>();
 		// result를 확인하기 위한 HashMap이용
@@ -126,7 +121,7 @@ public class BoardController {
 		// 정보를 함께 담아 전달하기 위해 ( = Vo를 두개 전달하기 위해) HashMap을 사용
 		
 		hashmap.put("boardVo", boardVo);
-		hashmap.put("com_codeVo", com_codeVo);
+		hashmap.put("comVo", comVo);
 		// HashMap에 두가지 정보를 담음
 		
 		int resultCnt = boardService.boardInsert(hashmap);
@@ -150,6 +145,7 @@ public class BoardController {
 	public String boardDeleteAction(Locale locale, @RequestParam("boardNum") int boardNum) throws Exception {
 		// boardNum을 이용하여 선택한 글이 삭제되도록 함
 		
+
 		int result = boardService.boardDelete(boardNum);
 		// result 변수를 사용하여 Service로 제대로 값이 전달되는지 확인
 		if(result == 0) {
@@ -164,11 +160,11 @@ public class BoardController {
 	// 게시글 수정
 	@RequestMapping(value = "/board/boardModify.do", method = RequestMethod.GET)
 	// board/boardModify.do와 연결 GET형식을 이용하여 url에서 값을 확인할 수 있도록 함
-	public String boardModify(Locale locale, Model model, @RequestParam("boardType")String boardType, @RequestParam("boardNum")int boardNum, Com_CodeVo com_codeVo) throws Exception {
+	public String boardModify(Locale locale, Model model, @RequestParam("codeId")String boardType, @RequestParam("boardNum")int boardNum, ComVo comVo) throws Exception {
 		
-		List<Com_CodeVo> Com_CodeList = new ArrayList<Com_CodeVo>();
+		List<ComVo> ComList = new ArrayList<ComVo>();
 		// Com_CodeVo에 저장된 값을 보여주기 위함
-		Com_CodeList = boardService.SelectTypeList(com_codeVo);
+		ComList = boardService.SelectTypeList(comVo);
 		// CodeId값 또한 수정할 수 있도록 SelectBox List를 보여주기 위해 Service로 값을 전달함
 	
 		BoardVo boardVo = boardService.selectBoard(boardType, boardNum);
@@ -176,7 +172,7 @@ public class BoardController {
 		
 		model.addAttribute("boardNum", boardNum);
 		model.addAttribute("board", boardVo);
-		model.addAttribute("com_codeList", Com_CodeList);
+		model.addAttribute("comList", ComList);
 		// Model을 이용하여 View로 key, value를 전달
 		
 		return "board/boardModify";
@@ -185,7 +181,7 @@ public class BoardController {
 	// 게시글 수정 method
 	@RequestMapping(value = "/board/boardModifyAction.do", method = RequestMethod.POST)
 	@ResponseBody
-	public String boardModifyAction(Locale locale, Model model, BoardVo boardVo, Com_CodeVo com_codeVo) throws Exception {
+	public String boardModifyAction(Locale locale, Model model, BoardVo boardVo, ComVo comVo) throws Exception {
 		
 		HashMap<String, String> result = new HashMap<String, String>();
 		// result를 확인하기 위한 HashMap이용
@@ -197,7 +193,7 @@ public class BoardController {
 		// 정보를 함께 담아 전달하기 위해 ( = Vo를 두개 전달하기 위해) HashMap을 사용 -> Write와 동일
 		
 		hashmap.put("boardVo", boardVo);
-		hashmap.put("com_codeVo", com_codeVo);
+		hashmap.put("comVo", comVo);
 		// HashMap에 두가지 정보를 담음
 		
 		int resultCnt = boardService.boardModify(hashmap);
@@ -209,4 +205,21 @@ public class BoardController {
 		return callbackMsg;
 	}
 	
+	@RequestMapping(value = "/board/boardSelectAction.do", method = RequestMethod.POST)
+	@ResponseBody
+	public String boardSelectAction(@RequestParam(value = "checkArr[]") List<String> checkArr) throws Exception {
+		
+		logger.info("넘어온 값 확인 : " + checkArr);
+		
+		for(int i = 0; i<checkArr.size(); i++) {
+			System.out.println(checkArr.get(i));
+			System.out.println("*************");
+		}
+
+		
+		
+		return "redirect:boardList.do";
+		
+	}
+
 }

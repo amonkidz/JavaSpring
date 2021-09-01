@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.spring.board.vo.BoardVo;
 import com.spring.board.vo.PageVo;
-import com.spring.board.vo.Com_CodeVo;
+import com.spring.board.vo.ComVo;
 
 public interface boardService {
 
@@ -23,6 +23,6 @@ public interface boardService {
 	
 	public int boardModify(HashMap<String, Object> HashVo) throws Exception;
 	
-	public List<Com_CodeVo> SelectTypeList(Com_CodeVo com_codeVo) throws Exception;
+	public List<ComVo> SelectTypeList(ComVo comVo) throws Exception;
 	
 }

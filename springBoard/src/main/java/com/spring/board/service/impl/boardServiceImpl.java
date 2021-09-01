@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spring.board.dao.BoardDao;
-import com.spring.board.vo.Com_CodeVo;
+import com.spring.board.vo.ComVo;
 import com.spring.board.service.boardService;
 import com.spring.board.vo.BoardVo;
 import com.spring.board.vo.PageVo;
@@ -68,10 +68,9 @@ public class boardServiceImpl implements boardService{
 	}
 	
 	@Override
-	public List<Com_CodeVo> SelectTypeList(Com_CodeVo com_codeVo) throws Exception {
+	public List<ComVo> SelectTypeList(ComVo comVo) throws Exception {
 		
-		return boardDao.selectTypeList(com_codeVo);
+		return boardDao.selectTypeList(comVo);
 	}
-	
 	
 }

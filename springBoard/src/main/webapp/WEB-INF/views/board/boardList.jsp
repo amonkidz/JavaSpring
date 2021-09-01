@@ -8,20 +8,52 @@
 <title>list</title>
 </head>
 <script type="text/javascript">
-$j(document).ready(function(){
-		$j("#total").on("click", function() {
+	$j(document).ready(function() {
+		
+		// 체크박스 전체선택, 전체해제
+		$j("#total").click(function() {
+			// 전체선택이 체크된 경우
 			if ($j("#total").prop("checked")) {
+				// 모든 항목 체크
 				$j("input[name=CheckType]").prop("checked", true);
+				console.log("전체 체크");
 			} else {
+				// 모든 항목 체크 해제 
 				$j("input[name=CheckType]").prop("checked", false);
+				console.log("전체 체크 해제");
 			}
 		});
-		
-		$j(".CheckType").click(function(){
+
+		// 한개 체크 박스를 해제할 경우
+		$j(".CheckSelect").click(function() {
+			// 전체 체크 해제됨
 			$j("#total").prop("checked", false);
+			console.log("전체 체크 해제");
 		});
-});
 		
+		$j("#submit").click(function(){
+			
+			var len = $j("input[name=CheckType]:checked").length;
+			console.log(len);
+			
+			var checkArr = [];
+			$j("input[name=CheckType]:checked").each(function(){
+				checkArr.push($j(this).val());
+				console.log(checkArr);
+			});
+			
+			$j.ajax({
+				url : '/board/boardSelectAction.do'
+				, type : 'POST'
+				, dataType : 'text'
+				, data : {
+					checkArr: checkArr
+				}, success : function(data) {
+					console.log("전송성공");
+				}
+			});
+		});
+	});
 </script>
 <body>
 	<table align="center">
@@ -53,10 +85,10 @@ $j(document).ready(function(){
 		</tr>
 		<tr>
 			<td align="left"><input type="checkbox" id="total">전체 <c:forEach
-					var="check" items="${com_codeList}">
+					var="check" items="${comList}">
 					<input name="CheckType" value="${check.codeId}" type="checkbox"
-						class="CheckType">${check.codeName}
-			</c:forEach> <input type="submit" value="검색"></td>
+						class="CheckSelect">${check.codeName}
+			</c:forEach> <input id="submit" type="button" value="검색"></td>
 		</tr>
 	</table>
 </body>

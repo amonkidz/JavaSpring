@@ -46,7 +46,7 @@
 						<tr>
 							<td width="120" align="center">Type</td>
 							<td width="400"><select name="codeId" id="select_menu">
-									<c:forEach var="menu" items="${com_codeList}">
+									<c:forEach var="menu" items="${comList}">
 										<option value="${menu.codeId}">${menu.codeName}</option>
 									</c:forEach>
 							</select></td>

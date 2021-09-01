@@ -9,14 +9,14 @@ public class BoardVo {
 	private String creator;
 	private String modifier;
 	private int totalCnt;
-	private Com_CodeVo Com_codeList;
+	private ComVo ComList;
 
-	public Com_CodeVo getCom_codeList() {
-		return Com_codeList;
+	public ComVo getComList() {
+		return ComList;
 	}
 
-	public void setCom_codeList(Com_CodeVo com_codeList) {
-		Com_codeList = com_codeList;
+	public void setComList(ComVo comList) {
+		ComList = comList;
 	}
 
 	public int getTotalCnt() {
